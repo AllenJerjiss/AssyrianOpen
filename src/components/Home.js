@@ -85,7 +85,7 @@ const Home = () => {
                     <td>
                       {player.status === 'payment pending' ? (
                         <a
-                          href={`https://venmo.com/?txn=pay&amount=20&note=Payment for ${player.name} in ${team.name}`}
+                          href={player.venmoLink}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="venmo-link"

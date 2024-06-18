@@ -24,6 +24,13 @@ const readStatusUpdates = () => {
   });
 };
 
+const generateVenmoLink = (name, teamName) => {
+  const venmoUsername = 'Allen-Jerjiss'; // Replace with your Venmo username
+  const amount = 250; // Replace with the correct amount
+  const paymentNote = `Payment for ${name} in ${teamName}`;
+  return `https://venmo.com/${venmoUsername}?txn=pay&amount=${amount}&note=${encodeURIComponent(paymentNote)}`;
+};
+
 exports.getAllTeams = async (req, res) => {
   try {
     const teams = await Team.find();
@@ -31,7 +38,8 @@ exports.getAllTeams = async (req, res) => {
     const updatedTeams = teams.map(team => {
       const players = team.players.map(player => ({
         ...player._doc,
-        status: statusUpdates[player.email.toLowerCase()] || player.status
+        status: statusUpdates[player.email.toLowerCase()] || player.status,
+        venmoLink: generateVenmoLink(player.name, team.name)
       }));
       return {
         ...team._doc,
@@ -73,19 +81,13 @@ exports.addPlayerToTeam = async (req, res) => {
       return res.status(404).json({ message: 'Team not found' });
     }
 
-    const newPlayer = { name, email: email.toLowerCase(), status: 'payment pending' };
+    const newPlayer = { name, email: email.toLowerCase(), status: 'payment pending', venmoLink: generateVenmoLink(name, team.name) };
     team.players.push(newPlayer);
     await team.save();
     const updatedTeams = await Team.find();
     await writeCsv(updatedTeams); // Generate the CSV file
 
-    // Generate Venmo payment link
-    const venmoUsername = 'Allen-Jerjis'; // Replace with your Venmo username
-    const amount = 250; // Replace with the amount to be paid
-    const paymentNote = `Payment for ${name} in ${team.name}`;
-    const venmoLink = `https://venmo.com/${venmoUsername}?txn=pay&amount=${amount}&note=${encodeURIComponent(paymentNote)}`;
-
-    res.status(201).json({ player: newPlayer, venmoLink });
+    res.status(201).json({ player: newPlayer });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
