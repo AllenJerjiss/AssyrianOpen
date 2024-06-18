@@ -1,0 +1,88 @@
+/* Home.css */
+
+.home-container {
+  text-align: center;
+  position: relative;
+  min-height: 100vh;
+  background-image: url('../images/lamasu.webp');
+  background-size: cover;
+  background-position: center;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, .6); /* Remove opacity */
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+.team-card {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  display: inline-block;
+  width: auto; /* Allow width to adjust based on content */
+  max-width: 90%; /* Prevent it from being too wide */
+  text-align: left;
+  background-color: #fff; /* Set to solid white */
+  opacity: .8;
+}
+
+.team-card h2 {
+  margin: 0 0 10px;
+  text-align: center;
+}
+
+.player-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.player-table th, .player-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+  white-space: nowrap; /* Prevent text from wrapping */
+}
+
+.player-table th {
+  background-color: #f2f2f2;
+}
+
+input[type="text"] {
+  margin: 10px 0;
+  padding: 5px;
+}
+
+button {
+  padding: 10px 15px;
+  margin: 10px 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ddd;
+}
+
+.venmo-link {
+  color: #fff;
+  background-color: #3d95ce;
+  padding: 5px 10px;
+  border-radius: 5px;
+  text-decoration: none;
+  display: inline-block; /* Ensure it respects padding */
+}
+
+.venmo-link:hover {
+  background-color: #357ab8;
+}
+

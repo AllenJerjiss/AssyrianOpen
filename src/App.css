@@ -1,0 +1,14 @@
+/* src/App.css */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.app-container {
+  text-align: center;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
