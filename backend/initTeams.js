@@ -1,28 +1,22 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-// Check if the MONGO_URI environment variable is defined
-if (!process.env.MONGO_URI) {
-  console.error('Error: MONGO_URI is not defined in the .env file.');
-  process.exit(1);
-}
-
 // Get the MongoDB connection string from the environment variables
 const mongoURI = process.env.MONGO_URI;
+
+const playerSchema = new mongoose.Schema({
+  firstName: { type: String },
+  lastName: { type: String },
+  email: { type: String, unique: true, sparse: true },
+  phoneNumber: { type: String },
+  status: { type: String, default: 'payment pending' },
+  venmoLink: { type: String }
+});
 
 const teamSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
   status: { type: String, default: 'active' },
-  players: [
-    {
-      firstName: { type: String, required: true },
-      lastName: { type: String, required: true },
-      email: { type: String, required: true, unique: true },
-      phoneNumber: { type: String, required: true },
-      status: { type: String, default: 'payment pending' },
-      venmoLink: { type: String }
-    }
-  ]
+  players: [playerSchema]
 });
 
 const Team = mongoose.model('Team', teamSchema);

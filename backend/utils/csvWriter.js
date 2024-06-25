@@ -10,8 +10,10 @@ const csvWriter = createCsvWriter({
   path: csvFilePath,
   header: [
     {id: 'team', title: 'Team'},
-    {id: 'name', title: 'Name'},
+    {id: 'firstName', title: 'First Name'},
+    {id: 'lastName', title: 'Lirst Name'},
     {id: 'email', title: 'Email'},
+    {id: 'phoneNumber', title: 'Phone Number'},
     {id: 'status', title: 'Status'},
   ]
 });

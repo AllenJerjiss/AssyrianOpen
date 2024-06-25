@@ -120,6 +120,8 @@ const Home = () => {
                             </a>
                             <div className="pending-status">pending</div>
                           </>
+                        ) : player.status === 'confirmed' ? (
+                          <div className="confirmed-status">confirmed</div>
                         ) : (
                           player.status
                         )}

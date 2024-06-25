@@ -1,4 +1,3 @@
-// controllers/teamController.js
 const Team = require('../models/Team');
 const writeCsv = require('../utils/csvWriter');
 const csvParser = require('csv-parser');

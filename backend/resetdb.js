@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const mongoURI = 'mongodb://localhost:27017/assyrian-open';
+const mongoURI = 'mongodb://assyrian:F%40%40dforthought@localhost:27017/assyrian-open';
 
 const Team = require('./models/Team');
 
