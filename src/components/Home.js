@@ -4,40 +4,28 @@ import './Home.css';
 
 const Home = () => {
   const [teams, setTeams] = useState([]);
-  const teamNames = Array.from({ length: 18 }, (_, i) => `Team ${i + 1}`);
-
+  
   useEffect(() => {
     axios.get('/api/teams').then(response => {
-      const existingTeams = response.data.map(team => team.name);
-      const teamsToCreate = teamNames.filter(name => !existingTeams.includes(name));
-      
-      Promise.all(
-        teamsToCreate.map(name => axios.post('/api/teams', { name, status: 'active', players: [] }))
-      ).then(() => {
-        axios.get('/api/teams').then(response => {
-          const sortedTeams = response.data.sort((a, b) => {
-            const aNumber = parseInt(a.name.split(' ')[1]);
-            const bNumber = parseInt(b.name.split(' ')[1]);
-            return aNumber - bNumber;
-          });
-          setTeams(sortedTeams);
-        }).catch(error => {
-          console.error('There was an error fetching the teams!', error);
-        });
-      }).catch(error => {
-        console.error('There was an error creating the teams!', error);
+      const sortedTeams = response.data.sort((a, b) => {
+        const aNumber = parseInt(a.name.split(' ')[1]);
+        const bNumber = parseInt(b.name.split(' ')[1]);
+        return aNumber - bNumber;
       });
+      setTeams(sortedTeams);
     }).catch(error => {
       console.error('There was an error fetching the teams!', error);
     });
   }, []);
+
+  const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 
   const promptForInput = (message, validator) => {
     let input;
     do {
       input = prompt(message).trim().toLowerCase();
     } while (!validator(input));
-    return input;
+    return capitalize(input);
   };
 
   const handleAddPlayer = (teamId) => {
@@ -54,7 +42,7 @@ const Home = () => {
     const playerEmail = promptForInput(
       'Enter player email:',
       input => /^[^\s@]+@[^\s@]+\.[a-z]{3}$/.test(input)
-    );
+    ).toLowerCase(); // Ensure email is stored in lowercase
 
     const phoneNumber = promptForInput(
       'Enter phone number (format: 123-456-7890):',
@@ -88,8 +76,6 @@ const Home = () => {
                   <tr>
                     <th>First Name</th>
                     <th>Last Name</th>
-                    <th>Email</th>
-                    <th>Phone Number</th>
                     <th>Status</th>
                   </tr>
                 </thead>
@@ -98,8 +84,6 @@ const Home = () => {
                     <tr key={index}>
                       <td>{player.firstName}</td>
                       <td>{player.lastName}</td>
-                      <td>{player.email}</td>
-                      <td>{player.phoneNumber}</td>
                       <td>
                         {player.status === 'payment pending' ? (
                           <a

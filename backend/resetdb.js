@@ -3,6 +3,8 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+const mongoURI = 'mongodb://localhost:27017/assyrian-open';
+
 const Team = require('./models/Team');
 
 const connectDB = async () => {
