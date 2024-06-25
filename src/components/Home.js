@@ -4,15 +4,38 @@ import './Home.css';
 
 const Home = () => {
   const [teams, setTeams] = useState([]);
-  
+  const teamNames = Array.from({ length: 18 }, (_, i) => `Team ${i + 1}`);
+
   useEffect(() => {
     axios.get('/api/teams').then(response => {
-      const sortedTeams = response.data.sort((a, b) => {
-        const aNumber = parseInt(a.name.split(' ')[1]);
-        const bNumber = parseInt(b.name.split(' ')[1]);
-        return aNumber - bNumber;
-      });
-      setTeams(sortedTeams);
+      const existingTeams = response.data.map(team => team.name);
+      const teamsToCreate = teamNames.filter(name => !existingTeams.includes(name));
+      
+      if (teamsToCreate.length > 0) {
+        Promise.all(
+          teamsToCreate.map(name => axios.post('/api/teams', { name, status: 'active', players: [] }))
+        ).then(() => {
+          axios.get('/api/teams').then(response => {
+            const sortedTeams = response.data.sort((a, b) => {
+              const aNumber = parseInt(a.name.split(' ')[1]);
+              const bNumber = parseInt(b.name.split(' ')[1]);
+              return aNumber - bNumber;
+            });
+            setTeams(sortedTeams);
+          }).catch(error => {
+            console.error('There was an error fetching the teams!', error);
+          });
+        }).catch(error => {
+          console.error('There was an error creating the teams!', error);
+        });
+      } else {
+        const sortedTeams = response.data.sort((a, b) => {
+          const aNumber = parseInt(a.name.split(' ')[1]);
+          const bNumber = parseInt(b.name.split(' ')[1]);
+          return aNumber - bNumber;
+        });
+        setTeams(sortedTeams);
+      }
     }).catch(error => {
       console.error('There was an error fetching the teams!', error);
     });
@@ -86,14 +109,17 @@ const Home = () => {
                       <td>{player.lastName}</td>
                       <td>
                         {player.status === 'payment pending' ? (
-                          <a
-                            href={player.venmoLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="venmo-link"
-                          >
-                            Pay via Venmo
-                          </a>
+                          <>
+                            <a
+                              href={player.venmoLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="venmo-link"
+                            >
+                              Venmo
+                            </a>
+                            <div className="pending-status">pending</div>
+                          </>
                         ) : (
                           player.status
                         )}
