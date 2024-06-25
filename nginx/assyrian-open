@@ -1,13 +1,13 @@
 server {
     listen 80;
-    server_name 3.128.7.57 fogfold.com www.fogfold.com;
+    server_name fogfold.com www.fogfold.com;
 
-    location /AssyrianOpen {
-        root /home/ubuntu/assyrian-open/build;
-        try_files $uri $uri/ /index.html;
+    location / {
+        root /AssyrianOpen/ui;
+        try_files /$uri $uri /index.html;
     }
     location /api/ {
-        proxy_pass http://localhost:8000;
+        proxy_pass http://localhost:5000;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';

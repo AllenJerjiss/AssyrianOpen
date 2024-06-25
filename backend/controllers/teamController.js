@@ -25,7 +25,7 @@ const readStatusUpdates = () => {
 };
 
 const generateVenmoLink = (name, teamName) => {
-  const venmoUsername = 'Allen-Jerjiss'; // Replace with your Venmo username
+  const venmoUsername = 'your-venmo-username'; // Replace with your Venmo username
   const amount = 250; // Replace with the correct amount
   const paymentNote = `Payment for ${name} in ${teamName}`;
   return `https://venmo.com/${venmoUsername}?txn=pay&amount=${amount}&note=${encodeURIComponent(paymentNote)}`;
@@ -36,11 +36,14 @@ exports.getAllTeams = async (req, res) => {
     const teams = await Team.find();
     const statusUpdates = await readStatusUpdates();
     const updatedTeams = teams.map(team => {
-      const players = team.players.map(player => ({
-        ...player._doc,
-        status: statusUpdates[player.email.toLowerCase()] || player.status,
-        venmoLink: generateVenmoLink(player.name, team.name)
-      }));
+      const players = team.players.map(player => {
+        const updatedStatus = statusUpdates[player.email.toLowerCase()] || player.status;
+        return {
+          ...player._doc,
+          status: updatedStatus,
+          venmoLink: updatedStatus === 'payment pending' ? generateVenmoLink(player.name, team.name) : null
+        };
+      });
       return {
         ...team._doc,
         players
