@@ -24,10 +24,10 @@ const readStatusUpdates = () => {
   });
 };
 
-const generateVenmoLink = (name, teamName) => {
-  const venmoUsername = 'your-venmo-username'; // Replace with your Venmo username
+const generateVenmoLink = (firstName, teamName) => {
+  const venmoUsername = 'allen-jerjiss'; // Use the correct Venmo username
   const amount = 250; // Replace with the correct amount
-  const paymentNote = `Payment for ${name} in ${teamName}`;
+  const paymentNote = `Payment for ${firstName} in ${teamName}`;
   return `https://venmo.com/${venmoUsername}?txn=pay&amount=${amount}&note=${encodeURIComponent(paymentNote)}`;
 };
 
@@ -37,11 +37,11 @@ exports.getAllTeams = async (req, res) => {
     const statusUpdates = await readStatusUpdates();
     const updatedTeams = teams.map(team => {
       const players = team.players.map(player => {
-        const updatedStatus = statusUpdates[player.email.toLowerCase()] || player.status;
+        const updatedStatus = statusUpdates[player.email] || player.status;
         return {
           ...player._doc,
           status: updatedStatus,
-          venmoLink: updatedStatus === 'payment pending' ? generateVenmoLink(player.name, team.name) : null
+          venmoLink: updatedStatus === 'payment pending' ? generateVenmoLink(player.firstName, team.name) : null
         };
       });
       return {
@@ -69,10 +69,10 @@ exports.createTeam = async (req, res) => {
 
 exports.addPlayerToTeam = async (req, res) => {
   try {
-    const { name, email } = req.body;
+    const { firstName, lastName, email, phoneNumber } = req.body;
     const teams = await Team.find();
     const emailExists = teams.some(team => 
-      team.players.some(player => player.email.toLowerCase() === email.toLowerCase())
+      team.players.some(player => player.email === email)
     );
 
     if (emailExists) {
@@ -84,7 +84,7 @@ exports.addPlayerToTeam = async (req, res) => {
       return res.status(404).json({ message: 'Team not found' });
     }
 
-    const newPlayer = { name, email: email.toLowerCase(), status: 'payment pending', venmoLink: generateVenmoLink(name, team.name) };
+    const newPlayer = { firstName, lastName, email, phoneNumber, status: 'payment pending', venmoLink: generateVenmoLink(firstName, team.name) };
     team.players.push(newPlayer);
     await team.save();
     const updatedTeams = await Team.find();

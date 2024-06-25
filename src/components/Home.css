@@ -63,6 +63,7 @@
 
 .player-table th {
   background-color: #f2f2f2;
+  font-size: 12px; /* Adjusted font size to fit in one line */
 }
 
 input[type="text"] {
@@ -91,5 +92,10 @@ button:hover {
 
 .venmo-link:hover {
   background-color: #357ab8;
+}
+
+/* Heading styles */
+h1, h3 {
+  color: darkgreen; /* Changed to dark green */
 }
 
